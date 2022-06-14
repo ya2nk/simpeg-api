@@ -61,8 +61,9 @@
   <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
   <script src="{{ asset('assets/vendor/datatable/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('assets/vendor/datatable/dataTables.bootstrap5.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/bootbox/bootbox.all.min.js') }}"></script>
   <script src="{{ asset('assets/js/alpine.min.js') }}" defer></script>
-
+  <script src="{{ asset('assets/js/js-loading-overlay.min.js') }}"></script>
   <!-- Template Main JS File -->
   <script src="{{ asset('assets/js/main.js') }}"></script>
   <script>
@@ -71,6 +72,24 @@
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	});
+	
+	$( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
+		if (jqxhr.status == 419) {
+			bootbox.alert("Session telah berakhir");
+			setTimeout(() => {
+				location.reload();
+			},1500);
+		}
+		
+		if (jqxhr.status == 404) {
+			bootbox.alert("URL Tidak diketemukan");
+		}
+		
+		if (jqxhr.status == 405) {
+			bootbox.alert("Method tidak diijinkan");
+		}
+	});
+	
   </script>
   <script type="text/javascript">
     document.addEventListener("alpine:init",() => {

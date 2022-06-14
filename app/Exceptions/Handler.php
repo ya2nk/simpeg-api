@@ -37,5 +37,34 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Url tidak diketemukan.'
+                ], 404);
+            }
+        });
+		
+		$this->renderable(function (MethodNotAllowedHttpException $e, $request) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Method Tidak diijinkan.'
+                ], 405);
+            }
+        });
+        
+        $this->renderable(function (HttpException $e, $request) {
+            if ($e->getStatusCode() == 419) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Session telah berakhir.'
+                    ], 419);
+                }
+            }
+        }); 
     }
 }
